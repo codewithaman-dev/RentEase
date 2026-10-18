@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Check, AlertCircle, X, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Check, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface DepositRefundModalProps {

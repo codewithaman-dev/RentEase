@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Phone, X, HelpCircle, ChevronRight } from 'lucide-react';
+import { MessageCircle, Phone, X, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const SupportWidget: React.FC = () => {

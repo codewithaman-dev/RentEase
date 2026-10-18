@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Truck, CreditCard, CheckCircle2, Lock, Calendar, Building, Sparkles } from 'lucide-react';
+import { ShieldCheck, Truck, CreditCard, CheckCircle2, Calendar, Building } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -20,7 +20,6 @@ export const CheckoutPage: React.FC = () => {
 
   // Step 1: Address & Floor Logistics
   const [fullName, setFullName] = useState(user?.name || 'Rahul Sharma');
-  const [email, setEmail] = useState(user?.email || 'customer@rentease.in');
   const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
   const [address, setAddress] = useState(user?.address || 'Flat 402, Green Glen Layout, Bellandur');
   const [city, setCity] = useState('Bengaluru');

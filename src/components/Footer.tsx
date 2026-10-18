@@ -9,7 +9,6 @@ import {
   Mail, 
   CheckCircle2, 
   Phone, 
-  MapPin, 
   Send
 } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';

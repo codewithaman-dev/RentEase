@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, ShieldCheck, Truck, Wrench, ArrowLeft, CheckCircle2, ShoppingBag, MessageSquare, MapPin, Check, AlertCircle, Sparkles } from 'lucide-react';
+import { Star, ShieldCheck, Truck, Wrench, ArrowLeft, CheckCircle2, ShoppingBag, MessageSquare, MapPin, Check, AlertCircle } from 'lucide-react';
 import { TenureCalculator } from '../components/TenureCalculator';
 import { ProductCard } from '../components/ProductCard';
 import { RentToOwnBadge } from '../components/RentToOwnBadge';

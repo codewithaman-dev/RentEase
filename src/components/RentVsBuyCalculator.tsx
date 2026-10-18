@@ -60,9 +60,8 @@ export const RentVsBuyCalculator: React.FC = () => {
   const buyingTotalOutlay = currentModel.buyPrice + currentModel.moverCost;
   const netBuyingCostAfterSale = buyingTotalOutlay - (currentModel.buyPrice - currentModel.liquidationLoss);
 
-  // Renting total outlay
-  const rentingTotalOutlay = (currentModel.rentMonthly * stayMonths) + currentModel.deposit;
-  const netRentingCost = currentModel.rentMonthly * stayMonths; // deposit refunded 100%
+  // Renting net outlay (deposit refunded 100%)
+  const netRentingCost = currentModel.rentMonthly * stayMonths;
 
   const netSavings = Math.max(0, netBuyingCostAfterSale - netRentingCost);
 

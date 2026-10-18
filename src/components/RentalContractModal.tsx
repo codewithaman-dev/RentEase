@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Printer, Download, CheckCircle2, Sofa, X } from 'lucide-react';
+import { Printer, CheckCircle2, Sofa, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Rental } from '../types';
 

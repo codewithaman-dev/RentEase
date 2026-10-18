@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tag, Check, ArrowRight } from 'lucide-react';
+import { Tag } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 
 interface CouponBoxProps {

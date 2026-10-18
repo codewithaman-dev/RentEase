@@ -1,21 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Sofa, 
   ChevronLeft, 
   ChevronRight, 
-  User, 
   LogOut, 
-  LayoutDashboard, 
-  Package, 
-  Truck, 
-  Wrench, 
-  ShieldAlert, 
-  Users, 
-  MapPin, 
-  BarChart3, 
-  FileSpreadsheet,
-  Bell,
   Home
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -24,7 +13,7 @@ import { useToast } from '../contexts/ToastContext';
 interface SidebarItem {
   id: string;
   label: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   count?: number;
 }
 
@@ -53,7 +42,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const { user, signOut } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();

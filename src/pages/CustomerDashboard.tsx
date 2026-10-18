@@ -3,14 +3,8 @@ import {
   Package, 
   Wrench, 
   RefreshCw, 
-  CreditCard, 
   Calendar, 
-  CheckCircle2, 
   Truck,
-  User,
-  Plus,
-  Clock,
-  X,
   FileText
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -28,7 +22,7 @@ export const CustomerDashboard: React.FC = () => {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [tickets, setTickets] = useState<MaintenanceTicket[]>([]);
   const [relocations, setRelocations] = useState<RelocationRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
 
   // Modals State
   const [trackRental, setTrackRental] = useState<Rental | null>(null);
@@ -45,17 +39,16 @@ export const CustomerDashboard: React.FC = () => {
   const [returning, setReturning] = useState(false);
 
   // Relocation Form State
-  const [selectedRentalForMove, setSelectedRentalForMove] = useState('');
-  const [currentAddr, setCurrentAddress] = useState(user?.address || '');
+  const [selectedRentalForMove] = useState('');
+  const [currentAddr] = useState(user?.address || '');
   const [newAddr, setNewAddress] = useState('');
-  const [preferredMoveDate, setPreferredMoveDate] = useState('2025-04-10');
+  const [preferredMoveDate] = useState('2025-04-10');
   const [relocationSubmitting, setRelocationSubmitting] = useState(false);
 
   // Ticket Form State
-  const [ticketRentalId, setTicketRentalId] = useState('');
-  const [ticketCategory, setTicketCategory] = useState<string>('General Inquiry');
+  const [ticketRentalId] = useState('');
   const [ticketDescription, setTicketDescription] = useState('');
-  const [ticketPriority, setTicketPriority] = useState<string>('MEDIUM');
+  const [ticketPriority] = useState<string>('MEDIUM');
   const [ticketSubmitting, setTicketSubmitting] = useState(false);
 
   const fetchUserData = async () => {
@@ -86,6 +79,7 @@ export const CustomerDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleExtendTenure = async (e: React.FormEvent) => {

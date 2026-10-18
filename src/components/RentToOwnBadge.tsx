@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface RentToOwnBadgeProps {
   monthlyRate: number;

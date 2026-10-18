@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Star, ShieldCheck, Truck, Wrench, ShoppingBag, Heart, ArrowRight } from 'lucide-react';
+import { X, Star, ShoppingBag, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
@@ -104,11 +104,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-slate-300">Select Rental Tenure:</label>
                 <div className="grid grid-cols-3 gap-2">
-                  {[3, 6, 12].map((m) => (
+                  {([3, 6, 12] as const).map((m) => (
                     <button
                       key={m}
                       type="button"
-                      onClick={() => setSelectedTenure(m as any)}
+                      onClick={() => setSelectedTenure(m)}
                       className={`p-2.5 rounded-xl border text-center transition-all ${
                         selectedTenure === m
                           ? 'bg-emerald-950/40 border-emerald-500 text-white font-bold'
@@ -116,7 +116,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                       }`}
                     >
                       <div className="text-[10px] uppercase font-bold">{m} Months</div>
-                      <div className="text-sm font-black text-emerald-400">₹{getMonthlyRate(m as any)}/mo</div>
+                      <div className="text-sm font-black text-emerald-400">₹{getMonthlyRate(m)}/mo</div>
                     </button>
                   ))}
                 </div>

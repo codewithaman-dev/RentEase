@@ -1,6 +1,6 @@
 import supabase from './supabase';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SERVICE_AREAS, INITIAL_REVIEWS } from '../data/mockData';
-import type { Product, Category, Review } from '../types';
+import type { Product, Review } from '../types';
 
 export { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SERVICE_AREAS, INITIAL_REVIEWS };
 
@@ -10,7 +10,9 @@ function decodeToken(token: string) {
     if (decoded && (decoded.exp + 86400) > Math.floor(Date.now() / 1000)) {
       return decoded;
     }
-  } catch {}
+  } catch {
+    /* ignore expired or malformed token */
+  }
   return null;
 }
 
@@ -328,7 +330,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}): Pro
       // Demo role accounts
       let role = 'CUSTOMER';
       let name = 'Rahul Sharma';
-      let phone = '+91 98765 43210';
+      const phone = '+91 98765 43210';
 
       if (cleanEmail === 'admin@rentease.in') {
         role = 'ADMIN';

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Calendar, Truck, RefreshCw, ArrowLeft, CheckCircle2, DollarSign } from 'lucide-react';
+import { Calendar, Truck, RefreshCw, ArrowLeft, CheckCircle2, DollarSign } from 'lucide-react';
 
 export const RentalTermsPage: React.FC = () => {
   useEffect(() => {

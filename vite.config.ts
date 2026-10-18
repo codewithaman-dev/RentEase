@@ -13,7 +13,7 @@ function localApiPlugin() {
         if (urlStr.startsWith('/api/')) {
           try {
             const urlObj = new URL(urlStr, 'http://localhost:5173');
-            let pathname = urlObj.pathname;
+            const pathname = urlObj.pathname;
             
             let filePath = path.resolve(process.cwd(), '.' + pathname + '.js');
             if (!fs.existsSync(filePath)) {
@@ -78,10 +78,12 @@ function localApiPlugin() {
 export default defineConfig(async ({ mode }) => {
   const plugins = [react(), tailwindcss(), localApiPlugin()];
   try {
-    // @ts-ignore
+    // @ts-expect-error optional source tags script
     const m = await import('./.vite-source-tags.js');
     plugins.push(m.sourceTags());
-  } catch {}
+  } catch {
+    /* ignore optional file */
+  }
 
   const env = loadEnv(mode, process.cwd(), ['VITE_', 'NEXT_PUBLIC_']);
   const processEnvDefines: Record<string, string> = {};

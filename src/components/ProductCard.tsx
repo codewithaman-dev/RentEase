@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Star, ShieldCheck, Wrench, ArrowRight, Sparkles, Heart, Eye } from 'lucide-react';
+import { Star, ArrowRight, Sparkles, Heart } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sofa, ShieldCheck, Truck, RefreshCw, CheckCircle2, Award, HeartHandshake } from 'lucide-react';
+import { RefreshCw, Award, HeartHandshake } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const AboutPage: React.FC = () => {

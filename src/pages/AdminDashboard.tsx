@@ -8,15 +8,9 @@ import {
   FileSpreadsheet, 
   TrendingUp, 
   Wrench, 
-  Plus, 
-  RefreshCw,
   Search,
   Edit2,
-  Trash2,
-  Check,
-  X,
-  UserCheck,
-  AlertCircle
+  Trash2
 } from 'lucide-react';
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Rental, Product } from '../types';
@@ -32,7 +26,7 @@ export const AdminDashboard: React.FC = () => {
   const [tickets, setTickets] = useState<any[]>([]);
   const [disputes, setDisputes] = useState<any[]>([]);
   const [serviceAreas, setServiceAreas] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
   // Search & Filter

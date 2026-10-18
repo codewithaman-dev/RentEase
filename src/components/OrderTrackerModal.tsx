@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Package, Truck, CheckCircle2, Clock, MapPin, X, Wrench } from 'lucide-react';
+import React from 'react';
+import { CheckCircle2, Clock, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface OrderTrackerModalProps {

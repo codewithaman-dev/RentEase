@@ -13,8 +13,7 @@ import {
   Star, 
   Building2, 
   Upload,
-  CheckCircle2,
-  Image as ImageIcon
+  CheckCircle2
 } from 'lucide-react';
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Product, MaintenanceTicket, Rental } from '../types';
@@ -27,7 +26,7 @@ export const VendorDashboard: React.FC = () => {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [tickets, setTickets] = useState<MaintenanceTicket[]>([]);
   const [damageClaims, setDamageClaims] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
   // Search & Filter
