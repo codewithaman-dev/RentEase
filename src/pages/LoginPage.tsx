@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Sofa, Eye, EyeOff, AlertCircle, ArrowLeft, Sparkles } from 'lucide-react';
+import { Sofa, Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { signInWithGoogle } from '../lib/googleAuth';
 import { useToast } from '../contexts/ToastContext';
@@ -78,54 +78,6 @@ export const LoginPage: React.FC = () => {
             <span>{errorMessage}</span>
           </div>
         )}
-
-        {/* 1-Click Demo Persona Selector */}
-        <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-2xl space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-slate-300 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" /> Instant Demo Roles
-            </span>
-            <span className="text-xs text-emerald-400 font-semibold">1-Click Auto-Fill</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-xs">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('customer@rentease.in');
-                setPassword('Customer@123');
-                showToast('Filled Renter demo credentials', 'info');
-              }}
-              className="p-2.5 bg-slate-900 hover:bg-emerald-500/10 border border-slate-800 hover:border-emerald-500/40 rounded-xl text-center transition-all group cursor-pointer"
-            >
-              <span className="block font-bold text-white group-hover:text-emerald-400 text-xs">Renter</span>
-              <span className="block text-xs text-slate-400 mt-0.5">Rahul S.</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('vendor@rentease.in');
-                setPassword('Vendor@123');
-                showToast('Filled Vendor demo credentials', 'info');
-              }}
-              className="p-2.5 bg-slate-900 hover:bg-amber-500/10 border border-slate-800 hover:border-amber-500/40 rounded-xl text-center transition-all group cursor-pointer"
-            >
-              <span className="block font-bold text-white group-hover:text-amber-400 text-xs">Vendor</span>
-              <span className="block text-xs text-slate-400 mt-0.5">Logistics</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('admin@rentease.in');
-                setPassword('Admin@123');
-                showToast('Filled Admin demo credentials', 'info');
-              }}
-              className="p-2.5 bg-slate-900 hover:bg-purple-500/10 border border-slate-800 hover:border-purple-500/40 rounded-xl text-center transition-all group cursor-pointer"
-            >
-              <span className="block font-bold text-white group-hover:text-purple-400 text-xs">Admin HQ</span>
-              <span className="block text-xs text-slate-400 mt-0.5">Platform</span>
-            </button>
-          </div>
-        </div>
 
         {/* Login Form */}
         <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
