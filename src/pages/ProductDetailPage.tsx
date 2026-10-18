@@ -183,7 +183,7 @@ export const ProductDetailPage: React.FC = () => {
       </Link>
 
       {/* Main Product Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         
         {/* Left Column: Image Gallery & Guarantees */}
         <div className="lg:col-span-7 space-y-6">
@@ -297,7 +297,7 @@ export const ProductDetailPage: React.FC = () => {
         </div>
 
         {/* Right Column: Pricing & Tenure Calculator */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
           
           <div>
             <span className="text-xs text-emerald-400 font-bold uppercase tracking-wider">

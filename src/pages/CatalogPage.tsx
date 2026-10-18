@@ -21,6 +21,7 @@ export const CatalogPage: React.FC = () => {
   const [priceMax, setPriceMax] = useState<number>(3500);
   const [sortBy, setSortBy] = useState<'rating' | 'price-asc' | 'price-desc'>('rating');
   const [loading, setLoading] = useState<boolean>(true);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
 
   const { wishlistProducts, wishlistCount } = useWishlist();
 
@@ -188,11 +189,30 @@ export const CatalogPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      {/* Mobile Filter Toggle Button */}
+      <div className="lg:hidden flex items-center justify-between bg-slate-900 border border-slate-800 p-3.5 rounded-2xl">
+        <button
+          type="button"
+          onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+          className="flex items-center gap-2 text-xs font-bold text-emerald-400 cursor-pointer"
+        >
+          <Filter className="w-4 h-4" />
+          <span>{mobileFilterOpen ? 'Hide Filters' : 'Filter & Search Products'}</span>
+        </button>
+        <span className="text-xs text-slate-400 font-medium">
+          {filteredProducts.length} items found
+        </span>
+      </div>
+
+      {/* Main Grid Layout - items-start ensures sticky sidebar stays stable */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         
-        {/* Left Filter Sidebar */}
-        <div className="space-y-6 bg-slate-900/80 p-5 rounded-2xl border border-slate-800 h-fit">
+        {/* Left Filter Sidebar - Sticky and Fixed on Desktop */}
+        <aside
+          className={`${
+            mobileFilterOpen ? 'block' : 'hidden lg:block'
+          } lg:col-span-1 lg:sticky lg:top-24 space-y-6 bg-slate-900/90 backdrop-blur-md p-5 rounded-2xl border border-slate-800 shadow-xl max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain`}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
             <h3 className="font-bold text-white text-sm flex items-center gap-2">
               <Filter className="w-4 h-4 text-emerald-400" /> Filters
@@ -206,7 +226,7 @@ export const CatalogPage: React.FC = () => {
                 setPriceMax(3500);
                 setSearchParams({});
               }}
-              className="text-xs text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1"
+              className="text-xs text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1 cursor-pointer"
             >
               <RefreshCw className="w-3 h-3" /> Reset
             </button>
@@ -289,7 +309,7 @@ export const CatalogPage: React.FC = () => {
             />
           </div>
 
-        </div>
+        </aside>
 
         {/* Right Catalog Grid */}
         <div className="lg:col-span-3 space-y-6">
