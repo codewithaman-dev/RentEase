@@ -18,6 +18,16 @@ export const Footer: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const { showToast } = useToast();
 
+  const handleNavClick = () => {
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    } catch {
+      window.scrollTo(0, 0);
+    }
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  };
+
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail || !newsletterEmail.includes('@')) {
@@ -80,7 +90,7 @@ export const Footer: React.FC = () => {
           
           {/* Brand Column (3 Cols) */}
           <div className="md:col-span-12 lg:col-span-3 space-y-4">
-            <Link to="/" className="flex items-center gap-2 font-bold text-xl text-white group">
+            <Link to="/" onClick={handleNavClick} className="flex items-center gap-2 font-bold text-xl text-white group">
               <div className="p-2.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl group-hover:scale-105 transition-transform shadow-lg">
                 <Sofa className="w-6 h-6 text-white" />
               </div>
@@ -122,32 +132,32 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
-                <Link to="/catalog?category=living-room" className="hover:text-emerald-400 transition-colors">
+                <Link to="/catalog?category=living-room" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Living Room Sofas
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=bedroom" className="hover:text-emerald-400 transition-colors">
+                <Link to="/catalog?category=bedroom" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Bedroom Sets
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=appliances" className="hover:text-emerald-400 transition-colors">
+                <Link to="/catalog?category=appliances" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Home Appliances
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=study-wfh" className="hover:text-emerald-400 transition-colors">
+                <Link to="/catalog?category=study-wfh" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Work From Home
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=dining" className="hover:text-emerald-400 transition-colors">
+                <Link to="/catalog?category=dining" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Dining Tables
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?category=student-combos" className="hover:text-emerald-400 transition-colors">
+                <Link to="/catalog?category=student-combos" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   1BHK Student Combos
                 </Link>
               </li>
@@ -161,27 +171,27 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
-                <Link to="/catalog" className="hover:text-emerald-400 transition-colors">
+                <Link to="/catalog" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Explore Catalog
                 </Link>
               </li>
               <li>
-                <Link to="/cart" className="hover:text-emerald-400 transition-colors">
+                <Link to="/cart" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Rental Cart
                 </Link>
               </li>
               <li>
-                <Link to="/dashboard" className="hover:text-emerald-400 transition-colors">
+                <Link to="/dashboard" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Renter Dashboard
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-emerald-400 transition-colors">
+                <Link to="/about" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   About RentEase
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-emerald-400 transition-colors">
+                <Link to="/contact" onClick={handleNavClick} className="hover:text-emerald-400 transition-colors">
                   Contact Support
                 </Link>
               </li>
@@ -196,7 +206,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs text-slate-400">
               {['Bengaluru', 'Mumbai', 'Delhi NCR', 'Pune', 'Hyderabad', 'Chennai'].map((city) => (
                 <li key={city}>
-                  <Link to={`/catalog?city=${encodeURIComponent(city)}`} className="hover:text-emerald-400 cursor-pointer transition-colors block">
+                  <Link to={`/catalog?city=${encodeURIComponent(city)}`} onClick={handleNavClick} className="hover:text-emerald-400 cursor-pointer transition-colors block">
                     {city}
                   </Link>
                 </li>
@@ -247,13 +257,13 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-6">
-            <Link to="/privacy-policy" className="hover:text-slate-300 transition-colors">
+            <Link to="/privacy-policy" onClick={handleNavClick} className="hover:text-slate-300 transition-colors">
               Privacy Policy
             </Link>
-            <Link to="/rental-terms" className="hover:text-slate-300 transition-colors">
+            <Link to="/rental-terms" onClick={handleNavClick} className="hover:text-slate-300 transition-colors">
               Rental Agreement Terms
             </Link>
-            <Link to="/maintenance-sla" className="hover:text-slate-300 transition-colors">
+            <Link to="/maintenance-sla" onClick={handleNavClick} className="hover:text-slate-300 transition-colors">
               Free Maintenance SLA
             </Link>
           </div>
