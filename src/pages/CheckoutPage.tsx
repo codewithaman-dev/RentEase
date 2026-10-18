@@ -59,7 +59,16 @@ export const CheckoutPage: React.FC = () => {
     }
   };
 
-  const finalMonthlyPrice = totalMonthlyPrice + (damageProtectShield ? 99 : 0);
+  const [appliedCoupon] = useState<{ code: string; discount: number } | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('rentease_applied_coupon');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const finalMonthlyPrice = Math.max(1, totalMonthlyPrice + (damageProtectShield ? 99 : 0) - (appliedCoupon?.discount || 0));
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,6 +99,7 @@ export const CheckoutPage: React.FC = () => {
 
       setCreatedOrderNumber(data.data?.orderNumber || 'RE-IN-' + Math.floor(100000 + Math.random() * 900000));
       clearCart();
+      sessionStorage.removeItem('rentease_applied_coupon');
       setOrderComplete(true);
       showToast('Order confirmed successfully!', 'success');
     } catch (err: any) {
@@ -444,14 +454,26 @@ export const CheckoutPage: React.FC = () => {
             <div className="border-t border-slate-800 pt-3 space-y-2 text-xs">
               <div className="flex justify-between text-slate-300">
                 <span>Monthly Recurring Rent:</span>
-                <span className="font-bold text-white">₹{totalMonthlyPrice.toLocaleString('en-IN')} / mo</span>
+                <span className={`font-bold ${appliedCoupon ? 'line-through text-slate-500' : 'text-white'}`}>
+                  ₹{totalMonthlyPrice.toLocaleString('en-IN')} / mo
+                </span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-emerald-400 font-bold">
+                  <span>Voucher ({appliedCoupon.code}):</span>
+                  <span>-₹{appliedCoupon.discount.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               {damageProtectShield && (
-                <div className="flex justify-between text-emerald-400">
+                <div className="flex justify-between text-teal-400">
                   <span>RentEase Protect Shield:</span>
                   <span>+₹99 / mo</span>
                 </div>
               )}
+              <div className="flex justify-between text-slate-200 font-bold pt-1 border-t border-slate-800">
+                <span>Net First Month Rent:</span>
+                <span className="text-base font-black text-emerald-400">₹{finalMonthlyPrice.toLocaleString('en-IN')}</span>
+              </div>
               <div className="flex justify-between text-slate-400 pt-1 border-t border-slate-800/60">
                 <span>Refundable Deposit Total:</span>
                 <span className="font-bold text-teal-400">₹{totalDeposit.toLocaleString('en-IN')}</span>

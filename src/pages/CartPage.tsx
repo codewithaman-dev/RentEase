@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShoppingBag, Trash2, Plus, Minus, ShieldCheck, ArrowRight, Truck, Calendar } from 'lucide-react';
+import { ShoppingBag, Trash2, ShieldCheck, ArrowRight, Calendar, Tag, Sparkles, Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
@@ -9,6 +9,51 @@ export const CartPage: React.FC = () => {
   const { items, removeFromCart, updateTenure, totalMonthlyPrice, totalDeposit } = useCart();
   const navigate = useNavigate();
   const { showToast } = useToast();
+
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('rentease_applied_coupon');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const handleApplyCoupon = (e?: React.FormEvent, customCode?: string) => {
+    if (e) e.preventDefault();
+    const code = (customCode || couponInput).trim().toUpperCase();
+    if (!code) return;
+
+    if (code === 'RENTEASE500') {
+      const coupon = { code, discount: 500 };
+      setAppliedCoupon(coupon);
+      sessionStorage.setItem('rentease_applied_coupon', JSON.stringify(coupon));
+      showToast('₹500 voucher applied successfully!', 'success');
+    } else if (code === 'STUDENT10') {
+      const discount = Math.round(totalMonthlyPrice * 0.1);
+      const coupon = { code, discount };
+      setAppliedCoupon(coupon);
+      sessionStorage.setItem('rentease_applied_coupon', JSON.stringify(coupon));
+      showToast('10% Student Discount applied!', 'success');
+    } else if (code === 'FIRSTRENT') {
+      const coupon = { code, discount: 300 };
+      setAppliedCoupon(coupon);
+      sessionStorage.setItem('rentease_applied_coupon', JSON.stringify(coupon));
+      showToast('₹300 First Rent discount applied!', 'success');
+    } else {
+      showToast('Invalid coupon code. Try RENTEASE500 or STUDENT10', 'error');
+    }
+    setCouponInput('');
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    sessionStorage.removeItem('rentease_applied_coupon');
+    showToast('Coupon removed', 'info');
+  };
+
+  const finalMonthlyRent = Math.max(1, totalMonthlyPrice - (appliedCoupon?.discount || 0));
 
   const handleRemove = (productId: string, title: string) => {
     removeFromCart(productId);
@@ -134,10 +179,87 @@ export const CartPage: React.FC = () => {
           <div className="lg:col-span-4 bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-6 h-fit shadow-2xl">
             <h3 className="font-bold text-white text-lg border-b border-slate-800 pb-3">Rental Cost Summary</h3>
 
+            {/* Promo Voucher Box */}
+            <div className="space-y-2 p-3.5 bg-slate-950 rounded-2xl border border-slate-800">
+              <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-emerald-400" /> Have a Promo Code?
+              </label>
+
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl text-xs">
+                  <span className="flex items-center gap-1.5 font-bold text-emerald-400">
+                    <Check className="w-4 h-4 text-emerald-400" /> {appliedCoupon.code} applied (-₹{appliedCoupon.discount})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="text-slate-400 hover:text-red-400 p-1"
+                    title="Remove coupon"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value)}
+                    placeholder="Enter RENTEASE500"
+                    className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 uppercase focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                  <button
+                    type="submit"
+                    className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition-all shadow-md cursor-pointer"
+                  >
+                    Apply
+                  </button>
+                </form>
+              )}
+
+              {/* Quick Coupon Suggestions */}
+              {!appliedCoupon && (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => handleApplyCoupon(undefined, 'RENTEASE500')}
+                    className="text-[10px] bg-slate-900 border border-slate-800 hover:border-emerald-500 text-emerald-400 px-2 py-0.5 rounded-md font-mono transition-colors"
+                  >
+                    RENTEASE500 (-₹500)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyCoupon(undefined, 'STUDENT10')}
+                    className="text-[10px] bg-slate-900 border border-slate-800 hover:border-emerald-500 text-emerald-400 px-2 py-0.5 rounded-md font-mono transition-colors"
+                  >
+                    STUDENT10 (10% OFF)
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="space-y-3 text-xs">
               <div className="flex justify-between text-slate-300">
-                <span>Total Monthly Recurring Rent:</span>
-                <span className="text-lg font-black text-emerald-400">₹{totalMonthlyPrice.toLocaleString('en-IN')} / month</span>
+                <span>Monthly Recurring Rent:</span>
+                <span className={`text-base font-bold ${appliedCoupon ? 'line-through text-slate-500' : 'text-white'}`}>
+                  ₹{totalMonthlyPrice.toLocaleString('en-IN')}
+                </span>
+              </div>
+
+              {appliedCoupon && (
+                <div className="flex justify-between text-emerald-400 font-bold">
+                  <span className="flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5" /> Voucher Discount:
+                  </span>
+                  <span>-₹{appliedCoupon.discount.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-slate-200 font-bold pt-2 border-t border-slate-800">
+                <span>Net First Month Rent:</span>
+                <span className="text-xl font-black text-emerald-400">
+                  ₹{finalMonthlyRent.toLocaleString('en-IN')}<span className="text-xs text-slate-400 font-normal">/mo</span>
+                </span>
               </div>
 
               <div className="flex justify-between text-slate-400">
@@ -154,7 +276,7 @@ export const CartPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-[11px] text-slate-400 space-y-1">
+            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1">
               <p className="font-bold text-slate-200">Included with RentEase Agreement:</p>
               <p>• 100% Free City Relocation Support if you shift flats</p>
               <p>• Free On-Site Technician Repairs within 24 hours</p>
@@ -163,7 +285,7 @@ export const CartPage: React.FC = () => {
 
             <button
               onClick={() => navigate('/checkout')}
-              className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm rounded-2xl transition-all shadow-xl flex items-center justify-center gap-2"
+              className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-sm rounded-2xl transition-all shadow-xl flex items-center justify-center gap-2 cursor-pointer"
             >
               Proceed to Checkout <ArrowRight className="w-4 h-4" />
             </button>
