@@ -118,6 +118,8 @@ export const Navbar: React.FC = () => {
               <div className="relative w-full">
                 <input
                   type="text"
+                  id="navbar-search"
+                  name="navbar-search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search sofas, beds, fridges, study tables, combos..."
@@ -243,9 +245,12 @@ export const Navbar: React.FC = () => {
             <div className="relative">
               <input
                 type="text"
+                id="mobile-search"
+                name="mobile-search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search items..."
+                aria-label="Search items"
                 className="w-full pl-9 pr-3 py-2 bg-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-400"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />

@@ -160,11 +160,14 @@ export const RentVsBuyCalculator: React.FC = () => {
                   </div>
                   <input
                     type="range"
+                    id="stay-duration"
+                    name="stay-duration"
                     min="3"
                     max="24"
                     step="3"
                     value={stayMonths}
                     onChange={(e) => setStayMonths(Number(e.target.value))}
+                    aria-label="Stay duration in months"
                     className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
                   />
                   <div className="flex justify-between text-[9px] text-slate-500">

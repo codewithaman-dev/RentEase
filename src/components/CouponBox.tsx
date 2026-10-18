@@ -43,9 +43,12 @@ export const CouponBox: React.FC<CouponBoxProps> = ({ onApplyDiscount }) => {
       <form onSubmit={handleApply} className="flex gap-2">
         <input
           type="text"
+          id="coupon-code"
+          name="coupon-code"
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="Enter promo code"
+          aria-label="Enter promo coupon code"
           className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-white uppercase placeholder-slate-500 flex-1 focus:outline-none focus:border-emerald-500"
         />
         <button

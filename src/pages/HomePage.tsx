@@ -153,6 +153,8 @@ export const HomePage: React.FC = () => {
                 <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs font-bold text-emerald-400 shrink-0 w-full sm:w-auto">
                   <MapPin className="w-4 h-4 text-emerald-400" />
                   <select
+                    id="hero-city-select"
+                    name="hero-city-select"
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
                     aria-label="Select City"
@@ -176,6 +178,8 @@ export const HomePage: React.FC = () => {
                 <div className="relative flex-1 w-full">
                   <input
                     type="text"
+                    id="hero-search"
+                    name="hero-search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search queen beds, sofas, refrigerators..."
