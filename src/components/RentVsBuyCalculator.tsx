@@ -49,11 +49,12 @@ export const RentVsBuyCalculator: React.FC = () => {
   return (
     <>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-full hover:bg-emerald-500/30 transition-all shadow-md"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 rounded-full text-xs font-semibold transition-colors cursor-pointer"
       >
-        <Calculator className="w-4 h-4 text-emerald-400" />
-        <span>Rent vs Buy Financial Savings Calculator</span>
+        <Calculator className="w-3.5 h-3.5 text-emerald-400" />
+        <span>Rent vs Buy Calculator</span>
       </button>
 
       <AnimatePresence>

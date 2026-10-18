@@ -6,7 +6,7 @@ export const SupportWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-5 left-5 z-40">
+    <div className="fixed bottom-6 right-6 z-40">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -60,11 +60,13 @@ export const SupportWidget: React.FC = () => {
       </AnimatePresence>
 
       <button
+        type="button"
+        aria-label="Open Help and Support"
         onClick={() => setIsOpen(!isOpen)}
-        className="p-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-full shadow-2xl flex items-center gap-2 transition-transform hover:scale-105"
+        className="p-3.5 sm:px-5 sm:py-3.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-full shadow-2xl flex items-center gap-2 transition-transform hover:scale-105 cursor-pointer"
       >
-        <MessageCircle className="w-6 h-6" />
-        <span className="hidden sm:inline text-xs">Help & Support</span>
+        <MessageCircle className="w-5 h-5 text-slate-950" />
+        <span className="hidden sm:inline text-xs font-bold">Help & Support</span>
       </button>
     </div>
   );

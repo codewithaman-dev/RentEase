@@ -59,39 +59,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-white' : ''}`} />
             </button>
 
-            {/* Quick View Button */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setQuickViewProduct(product);
-              }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur-md hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 z-10"
-            >
-              <Eye className="w-3.5 h-3.5 text-emerald-400" /> Quick View
-            </button>
-
             {/* Condition Tag */}
             <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
-              <span className="bg-slate-900/90 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">
+              <span className="bg-slate-900/90 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-xs font-bold px-2.5 py-1 rounded-full shadow-md">
                 {product.condition || 'Brand New'}
               </span>
               {product.is_combo && (
-                <span className="bg-amber-500 text-slate-950 font-black text-[10px] px-2 py-1 rounded-full shadow-md flex items-center gap-1">
+                <span className="bg-amber-500 text-slate-950 font-black text-xs px-2 py-1 rounded-full shadow-md flex items-center gap-1">
                   <Sparkles className="w-3 h-3" /> Combo
                 </span>
               )}
             </div>
 
             {/* Rating Pill */}
-            <div className="absolute bottom-2 right-3 bg-slate-900/90 backdrop-blur-md text-amber-300 text-[11px] font-bold px-2 py-0.5 rounded-full border border-slate-700 flex items-center gap-1 shadow-md">
+            <div className="absolute bottom-2 right-3 bg-slate-900/90 backdrop-blur-md text-amber-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-slate-700 flex items-center gap-1 shadow-md">
               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
               <span>{product.rating || 4.8}</span>
-              <span className="text-[9px] text-slate-400 font-normal">({product.reviews_count || 12})</span>
+              <span className="text-xs text-slate-400 font-normal">({product.reviews_count || 12})</span>
             </div>
           </div>
 
           {/* Details Content */}
-          <div className="p-5 space-y-3">
+          <div className="p-5 space-y-2">
             <div className="text-xs text-slate-400 font-semibold tracking-wider uppercase">
               {product.category_name || 'Furniture'}
             </div>
@@ -102,7 +91,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </h3>
             </Link>
 
-            <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+            <p className="text-xs text-slate-400 line-clamp-1 leading-relaxed">
               {product.description}
             </p>
           </div>
@@ -112,22 +101,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="p-5 pt-0 mt-auto border-t border-slate-800/80 pt-4">
           <div className="flex items-end justify-between mb-3">
             <div>
-              <span className="text-[10px] text-slate-400 block uppercase font-medium">Rent starting from</span>
+              <span className="text-xs text-slate-400 block font-medium">Rent starting from</span>
               <div className="text-xl font-black text-white flex items-baseline gap-1">
                 ₹{Number(startingRate).toLocaleString('en-IN')}
                 <span className="text-xs font-normal text-slate-400">/mo</span>
               </div>
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-slate-400 block">Retail Value</span>
-              <span className="text-xs text-slate-500 line-through">₹{Number(product.retail_price || 15000).toLocaleString('en-IN')}</span>
+              <span className="text-xs text-slate-400 block font-medium">Retail Ref:</span>
+              <span className="text-xs text-slate-400 font-medium">₹{Number(product.retail_price || 15000).toLocaleString('en-IN')}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <Link
               to={`/product/${product.id}`}
-              className="w-full text-center py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors"
+              className="w-full text-center py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors cursor-pointer"
             >
               View Details
             </Link>
@@ -136,7 +125,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 addToCart(product, 6);
                 showToast(`Added "${product.title || product.name}" to cart!`, 'success');
               }}
-              className="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-1"
+              className="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer"
             >
               Quick Rent <ArrowRight className="w-3.5 h-3.5" />
             </button>

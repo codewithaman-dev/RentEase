@@ -131,13 +131,10 @@ export const HomePage: React.FC = () => {
             >
               
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-                <Link
-                  to="/catalog"
-                  className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-                  <span>Zero Upfront Cash Outlay • Flexi Rentals from ₹449/mo</span>
-                </Link>
+                <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-semibold text-emerald-400">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Zero Security Deposit • Rentals from ₹449/mo</span>
+                </span>
 
                 <RentVsBuyCalculator />
               </div>
@@ -160,6 +157,7 @@ export const HomePage: React.FC = () => {
                   <select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
+                    aria-label="Select City"
                     className="bg-transparent focus:outline-none text-white font-bold cursor-pointer"
                   >
                     {serviceAreas.length > 0 ? (
@@ -183,6 +181,7 @@ export const HomePage: React.FC = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search queen beds, sofas, refrigerators..."
+                    aria-label="Search furniture and appliances"
                     className="w-full bg-transparent pl-8 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none"
                   />
                   <Search className="w-4 h-4 text-slate-500 absolute left-2 top-2.5" />
@@ -214,7 +213,7 @@ export const HomePage: React.FC = () => {
 
             </motion.div>
 
-            {/* Right Floating Product Hero Image */}
+            {/* Right Product Hero Image */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -229,36 +228,22 @@ export const HomePage: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
 
-                {/* Floating Highlight Pill - Clickable */}
-                <Link
-                  to="/rental-terms"
-                  className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 hover:border-emerald-500/50 p-3 rounded-2xl shadow-xl flex items-center gap-3 group/pill transition-all cursor-pointer"
-                >
-                  <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl group-hover/pill:scale-110 transition-transform">
-                    <RefreshCw className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white group-hover/pill:text-emerald-400 transition-colors">Shifting Apartments?</div>
-                    <div className="text-[11px] text-emerald-400 font-medium">Free Relocation Service &rarr;</div>
-                  </div>
-                </Link>
-
-                {/* Floating Featured Combo Banner - Clickable */}
+                {/* Featured Combo Banner */}
                 <Link
                   to="/catalog?combo=true"
                   className="absolute bottom-6 left-6 right-6 p-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 hover:border-emerald-500/60 rounded-2xl group/combo transition-all cursor-pointer block"
                 >
                   <div className="flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" /> Featured Indian Combo
+                      <span className="text-xs text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" /> Featured Combo
                       </span>
-                      <h4 className="font-bold text-white text-base group-hover/combo:text-emerald-400 transition-colors">Full 1BHK Apartment Bundle</h4>
-                      <p className="text-xs text-slate-400">Queen Bed + Sofa + Fridge + WFH Desk</p>
+                      <h2 className="font-bold text-white text-base group-hover/combo:text-emerald-400 transition-colors">Full 1BHK Apartment Bundle</h2>
+                      <p className="text-xs text-slate-300">Queen Bed + Sofa + Fridge + WFH Desk</p>
                     </div>
                     <div className="text-right">
                       <span className="text-lg font-black text-emerald-400">₹2,499<span className="text-xs text-slate-400 font-normal">/mo</span></span>
-                      <span className="block text-[10px] text-emerald-400 font-bold mt-0.5">Explore &rarr;</span>
+                      <span className="block text-xs text-emerald-400 font-bold mt-0.5">Explore &rarr;</span>
                     </div>
                   </div>
                 </Link>
@@ -298,7 +283,7 @@ export const HomePage: React.FC = () => {
               <h3 className="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors">
                 {cat.name}
               </h3>
-              <p className="text-[11px] text-slate-400 mt-1">{cat.product_count || 6}+ Items</p>
+              <p className="text-xs text-slate-400 mt-1">{cat.product_count || 6}+ Items</p>
             </Link>
           ))}
         </div>
@@ -361,7 +346,7 @@ export const HomePage: React.FC = () => {
                     </div>
                     <h3 className="font-bold text-white text-base">{item.title}</h3>
                     <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
-                    <span className="text-[11px] font-bold text-emerald-400 block pt-1">Learn more &rarr;</span>
+                    <span className="text-xs font-bold text-emerald-400 block pt-1">Learn more &rarr;</span>
                   </motion.div>
                 </Link>
               );
