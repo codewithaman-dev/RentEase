@@ -11,11 +11,13 @@ import { apiFetch, INITIAL_PRODUCTS } from '../lib/api';
 
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<Product | null>(() => {
+    return INITIAL_PRODUCTS.find((p) => p.id === id || p.slug === id) || null;
+  });
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedTenure, setSelectedTenure] = useState<3 | 6 | 12>(6);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
 

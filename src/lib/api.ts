@@ -1,4 +1,4 @@
-import supabase from './supabase';
+import supabase, { isSupabaseConfigured } from './supabase';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SERVICE_AREAS, INITIAL_REVIEWS } from '../data/mockData';
 import type { Product, Review } from '../types';
 
@@ -187,16 +187,18 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}): Pro
       const limit = urlObj.searchParams.get('limit') ? Number(urlObj.searchParams.get('limit')) : 100;
       const page = urlObj.searchParams.get('page') ? Number(urlObj.searchParams.get('page')) : 1;
 
-      // Try Supabase first if available
-      try {
-        let query = supabase.from('products_v2').select('*');
-        if (isCombo) query = query.eq('is_combo', true);
-        if (search) query = query.or(`title.ilike.%${search}%,name.ilike.%${search}%`);
-        const { data: dbData } = await query.order('rating', { ascending: false });
-        if (dbData && dbData.length > 0) {
-          return { success: true, data: dbData };
-        }
-      } catch {}
+      // Try Supabase first if a real database is configured
+      if (isSupabaseConfigured) {
+        try {
+          let query = supabase.from('products_v2').select('*');
+          if (isCombo) query = query.eq('is_combo', true);
+          if (search) query = query.or(`title.ilike.%${search}%,name.ilike.%${search}%`);
+          const { data: dbData } = await query.order('rating', { ascending: false });
+          if (dbData && dbData.length > 0) {
+            return { success: true, data: dbData };
+          }
+        } catch {}
+      }
 
       // Fallback to in-memory mock products
       const filtered = filterMockProducts({
@@ -227,11 +229,13 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}): Pro
       const urlObj = new URL(endpoint, window.location.origin);
       const id = urlObj.searchParams.get('id');
 
-      // Try Supabase first
-      try {
-        const { data: dbProduct } = await supabase.from('products_v2').select('*').eq('id', id).single();
-        if (dbProduct) return { success: true, data: dbProduct };
-      } catch {}
+      // Try Supabase first if configured
+      if (isSupabaseConfigured) {
+        try {
+          const { data: dbProduct } = await supabase.from('products_v2').select('*').eq('id', id).single();
+          if (dbProduct) return { success: true, data: dbProduct };
+        } catch {}
+      }
 
       // Fallback to in-memory products
       const p = INITIAL_PRODUCTS.find((item) => item.id === id || item.slug === id);
@@ -240,19 +244,23 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}): Pro
 
     // C. GET /api/categories
     if (endpoint.startsWith('/api/categories') && method === 'GET') {
-      try {
-        const { data: dbCats } = await supabase.from('categories_v2').select('*');
-        if (dbCats && dbCats.length > 0) return { success: true, data: dbCats };
-      } catch {}
+      if (isSupabaseConfigured) {
+        try {
+          const { data: dbCats } = await supabase.from('categories_v2').select('*');
+          if (dbCats && dbCats.length > 0) return { success: true, data: dbCats };
+        } catch {}
+      }
       return { success: true, data: INITIAL_CATEGORIES };
     }
 
     // D. GET /api/service-areas
     if (endpoint.startsWith('/api/service-areas') && method === 'GET') {
-      try {
-        const { data: dbSA } = await supabase.from('service_areas').select('*').eq('is_active', true);
-        if (dbSA && dbSA.length > 0) return { success: true, data: dbSA };
-      } catch {}
+      if (isSupabaseConfigured) {
+        try {
+          const { data: dbSA } = await supabase.from('service_areas').select('*').eq('is_active', true);
+          if (dbSA && dbSA.length > 0) return { success: true, data: dbSA };
+        } catch {}
+      }
       return { success: true, data: INITIAL_SERVICE_AREAS };
     }
 

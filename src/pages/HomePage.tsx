@@ -23,12 +23,12 @@ import { Product, Category } from '../types';
 import { apiFetch, INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SERVICE_AREAS } from '../lib/api';
 
 export const HomePage: React.FC = () => {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [serviceAreas, setServiceAreas] = useState<any[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>(() => INITIAL_PRODUCTS.slice(0, 6));
+  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
+  const [serviceAreas, setServiceAreas] = useState<any[]>(INITIAL_SERVICE_AREAS);
   const [selectedCity, setSelectedCity] = useState('Bangalore');
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {

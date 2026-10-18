@@ -12,15 +12,21 @@ export const CatalogPage: React.FC = () => {
   const initialSearch = searchParams.get('search') || '';
   const initialCombo = searchParams.get('combo') === 'true';
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>(() => {
+    return filterMockProducts({
+      category: initialCategory,
+      search: initialSearch,
+      is_combo: initialCombo,
+    }).data;
+  });
+  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
   const [showComboOnly, setShowComboOnly] = useState<boolean>(initialCombo);
   const [showWishlistOnly, setShowWishlistOnly] = useState<boolean>(false);
   const [priceMax, setPriceMax] = useState<number>(3500);
   const [sortBy, setSortBy] = useState<'rating' | 'price-asc' | 'price-desc'>('rating');
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
 
   const { wishlistProducts, wishlistCount } = useWishlist();
@@ -238,9 +244,12 @@ export const CatalogPage: React.FC = () => {
             <div className="relative">
               <input
                 type="text"
+                id="catalog-search"
+                name="catalog-search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search sofas, desks, beds..."
+                aria-label="Search rental products"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
               />
               <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
@@ -300,11 +309,14 @@ export const CatalogPage: React.FC = () => {
             </div>
             <input
               type="range"
+              id="catalog-price-max"
+              name="catalog-price-max"
               min="400"
               max="3500"
               step="100"
               value={priceMax}
               onChange={(e) => setPriceMax(Number(e.target.value))}
+              aria-label="Filter products by maximum monthly rent"
               className="w-full accent-emerald-500 cursor-pointer"
             />
           </div>
@@ -322,8 +334,11 @@ export const CatalogPage: React.FC = () => {
 
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-slate-400" />
-              <span className="text-slate-400">Sort by:</span>
+              <label htmlFor="catalog-sort" className="text-slate-400">Sort by:</label>
               <select
+                id="catalog-sort"
+                name="catalog-sort"
+                aria-label="Sort products by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="bg-slate-950 border border-slate-800 text-white rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500"
