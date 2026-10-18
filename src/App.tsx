@@ -11,6 +11,7 @@ import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { SupportWidget } from './components/SupportWidget';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ScrollToTop } from './components/ScrollToTop';
 
 // Dynamic Code Splitting Lazy Imports
 const HomePage = lazy(() => import('./pages/HomePage').then(m => ({ default: m.HomePage })));
@@ -45,6 +46,7 @@ export function App() {
         <AuthProvider>
           <CartProvider>
             <BrowserRouter>
+              <ScrollToTop />
               <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 relative">
                 <Navbar />
                 
