@@ -19,6 +19,7 @@ import {
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Product, MaintenanceTicket, Rental } from '../types';
 import { useToast } from '../contexts/ToastContext';
+import { apiFetch } from '../lib/api';
 
 export const VendorDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('inventory');
@@ -68,16 +69,16 @@ export const VendorDashboard: React.FC = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [pRes, rRes, mRes, dRes] = await Promise.all([
-        fetch('/api/vendor/products', { headers }),
-        fetch('/api/vendor/rentals', { headers }),
-        fetch('/api/vendor/maintenance', { headers }),
-        fetch('/api/vendor/returns', { headers }),
+        apiFetch('/api/vendor/products', { headers }),
+        apiFetch('/api/vendor/rentals', { headers }),
+        apiFetch('/api/vendor/maintenance', { headers }),
+        apiFetch('/api/vendor/returns', { headers }),
       ]);
 
-      if (pRes.ok) setProducts((await pRes.json()).data || []);
-      if (rRes.ok) setRentals((await rRes.json()).data || []);
-      if (mRes.ok) setTickets((await mRes.json()).data || []);
-      if (dRes.ok) setDamageClaims((await dRes.json()).data || []);
+      if (pRes) setProducts(pRes.data || (Array.isArray(pRes) ? pRes : []));
+      if (rRes) setRentals(rRes.data || (Array.isArray(rRes) ? rRes : []));
+      if (mRes) setTickets(mRes.data || (Array.isArray(mRes) ? mRes : []));
+      if (dRes) setDamageClaims(dRes.data || (Array.isArray(dRes) ? dRes : []));
     } catch (err) {
       console.error(err);
     } finally {

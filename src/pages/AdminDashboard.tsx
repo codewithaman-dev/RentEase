@@ -21,6 +21,7 @@ import {
 import { DashboardLayout } from '../components/DashboardLayout';
 import { Rental, Product } from '../types';
 import { useToast } from '../contexts/ToastContext';
+import { apiFetch } from '../lib/api';
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -57,22 +58,22 @@ export const AdminDashboard: React.FC = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [repRes, uRes, pRes, rRes, tRes, dRes, saRes] = await Promise.all([
-        fetch('/api/admin/reports', { headers }),
-        fetch('/api/admin/users', { headers }),
-        fetch('/api/admin/products', { headers }),
-        fetch('/api/admin/rentals', { headers }),
-        fetch('/api/admin/maintenance', { headers }),
-        fetch('/api/admin/disputes', { headers }),
-        fetch('/api/admin/service-areas', { headers }),
+        apiFetch('/api/admin/reports', { headers }),
+        apiFetch('/api/admin/users', { headers }),
+        apiFetch('/api/admin/products', { headers }),
+        apiFetch('/api/admin/rentals', { headers }),
+        apiFetch('/api/admin/maintenance', { headers }),
+        apiFetch('/api/admin/disputes', { headers }),
+        apiFetch('/api/admin/service-areas', { headers }),
       ]);
 
-      if (repRes.ok) setReports((await repRes.json()).data);
-      if (uRes.ok) setUsers((await uRes.json()).data || []);
-      if (pRes.ok) setProducts((await pRes.json()).data || []);
-      if (rRes.ok) setRentals((await rRes.json()).data || []);
-      if (tRes.ok) setTickets((await tRes.json()).data || []);
-      if (dRes.ok) setDisputes((await dRes.json()).data || []);
-      if (saRes.ok) setServiceAreas((await saRes.json()).data || []);
+      if (repRes) setReports(repRes.data || repRes);
+      if (uRes) setUsers(uRes.data || (Array.isArray(uRes) ? uRes : []));
+      if (pRes) setProducts(pRes.data || (Array.isArray(pRes) ? pRes : []));
+      if (rRes) setRentals(rRes.data || (Array.isArray(rRes) ? rRes : []));
+      if (tRes) setTickets(tRes.data || (Array.isArray(tRes) ? tRes : []));
+      if (dRes) setDisputes(dRes.data || (Array.isArray(dRes) ? dRes : []));
+      if (saRes) setServiceAreas(saRes.data || (Array.isArray(saRes) ? saRes : []));
     } catch (err) {
       console.error(err);
     } finally {

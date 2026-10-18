@@ -18,6 +18,7 @@ import { useToast } from '../contexts/ToastContext';
 import { OrderTrackerModal } from '../components/OrderTrackerModal';
 import { RentalContractModal } from '../components/RentalContractModal';
 import { Rental, MaintenanceTicket, RelocationRequest } from '../types';
+import { apiFetch } from '../lib/api';
 
 export const CustomerDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -62,22 +63,19 @@ export const CustomerDashboard: React.FC = () => {
     try {
       const token = localStorage.getItem('rentease_token') || '';
       const [rRes, tRes, relRes] = await Promise.all([
-        fetch('/api/rentals', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/maintenance', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`/api/relocations?user_email=${encodeURIComponent(user?.email || 'customer@rentease.in')}`),
+        apiFetch('/api/rentals', { headers: { Authorization: `Bearer ${token}` } }),
+        apiFetch('/api/maintenance', { headers: { Authorization: `Bearer ${token}` } }),
+        apiFetch(`/api/relocations?user_email=${encodeURIComponent(user?.email || 'customer@rentease.in')}`),
       ]);
 
-      if (rRes.ok) {
-        const rData = await rRes.json();
-        setRentals(rData.data || rData);
+      if (rRes) {
+        setRentals(Array.isArray(rRes) ? rRes : (rRes.data || []));
       }
-      if (tRes.ok) {
-        const tData = await tRes.json();
-        setTickets(tData.data || tData);
+      if (tRes) {
+        setTickets(Array.isArray(tRes) ? tRes : (tRes.data || []));
       }
-      if (relRes.ok) {
-        const relData = await relRes.json();
-        setRelocations(relData.data || relData);
+      if (relRes) {
+        setRelocations(Array.isArray(relRes) ? relRes : (relRes.data || []));
       }
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
@@ -96,7 +94,7 @@ export const CustomerDashboard: React.FC = () => {
 
     setExtending(true);
     try {
-      const res = await fetch('/api/rentals/extend', {
+      const data = await apiFetch('/api/rentals/extend', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +103,7 @@ export const CustomerDashboard: React.FC = () => {
         body: JSON.stringify({ rentalId: extendModalRental.id, extendMonths }),
       });
 
-      if (res.ok) {
+      if (data && data.success !== false) {
         showToast(`Tenure extended by ${extendMonths} months!`, 'success');
         setExtendModalRental(null);
         fetchUserData();
@@ -123,7 +121,7 @@ export const CustomerDashboard: React.FC = () => {
 
     setReturning(true);
     try {
-      const res = await fetch('/api/rentals/return', {
+      const data = await apiFetch('/api/rentals/return', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,7 +130,7 @@ export const CustomerDashboard: React.FC = () => {
         body: JSON.stringify({ rentalId: returnModalRental.id, pickupDate }),
       });
 
-      if (res.ok) {
+      if (data && data.success !== false) {
         showToast('Return scheduled for pickup! Deposit refund queued.', 'success');
         setReturnModalRental(null);
         fetchUserData();
@@ -152,7 +150,7 @@ export const CustomerDashboard: React.FC = () => {
     const rentalItem = rentals.find((r) => r.id === selectedRentalForMove) || rentals[0];
 
     try {
-      const res = await fetch('/api/relocations', {
+      const data = await apiFetch('/api/relocations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -167,8 +165,8 @@ export const CustomerDashboard: React.FC = () => {
         }),
       });
 
-      if (res.ok) {
-        const newReq = await res.json();
+      if (data) {
+        const newReq = data.data || data;
         setRelocations([newReq, ...relocations]);
         setNewAddress('');
         showToast('Free City Relocation request submitted!', 'success');
@@ -188,7 +186,7 @@ export const CustomerDashboard: React.FC = () => {
     const rentalItem = rentals.find((r) => r.id === ticketRentalId) || rentals[0];
 
     try {
-      const res = await fetch('/api/maintenance', {
+      const data = await apiFetch('/api/maintenance', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +200,7 @@ export const CustomerDashboard: React.FC = () => {
         }),
       });
 
-      if (res.ok) {
+      if (data) {
         showToast('Maintenance ticket created! Technician SLA < 24h', 'success');
         setTicketDescription('');
         fetchUserData();

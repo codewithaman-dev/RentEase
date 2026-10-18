@@ -4,7 +4,7 @@ import { Filter, Search, SlidersHorizontal, Sparkles, RefreshCw, Heart } from 'l
 import { ProductCard } from '../components/ProductCard';
 import { Product, Category } from '../types';
 import { useWishlist } from '../contexts/WishlistContext';
-import { apiFetch } from '../lib/api';
+import { apiFetch, filterMockProducts, INITIAL_CATEGORIES } from '../lib/api';
 
 export const CatalogPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,9 +25,11 @@ export const CatalogPage: React.FC = () => {
   const { wishlistProducts, wishlistCount } = useWishlist();
 
   useEffect(() => {
-    setSelectedCategory(searchParams.get('category') || 'all');
+    const cat = searchParams.get('category') || 'all';
+    const combo = searchParams.get('combo') === 'true';
+    setSelectedCategory(cat);
     setSearchQuery(searchParams.get('search') || '');
-    setShowComboOnly(searchParams.get('combo') === 'true');
+    setShowComboOnly(combo || cat === 'student-combos' || cat === 'combos' || cat === 'combo');
   }, [searchParams]);
 
   useEffect(() => {
@@ -44,13 +46,30 @@ export const CatalogPage: React.FC = () => {
           apiFetch('/api/categories'),
         ]);
 
-        const prodsData = Array.isArray(prodRes) ? prodRes : (prodRes?.data || []);
+        let prodsData = Array.isArray(prodRes) ? prodRes : (prodRes?.data || []);
         const catsData = Array.isArray(catRes) ? catRes : (catRes?.data || []);
 
+        // Guaranteed fallback if API returned empty
+        if (!prodsData || prodsData.length === 0) {
+          const fallback = filterMockProducts({
+            category: selectedCategory,
+            search: searchQuery,
+            is_combo: showComboOnly,
+          });
+          prodsData = fallback.data;
+        }
+
         setProducts(prodsData);
-        setCategories(catsData);
+        setCategories(catsData.length > 0 ? catsData : INITIAL_CATEGORIES);
       } catch (err) {
         console.error('Error fetching catalog:', err);
+        const fallback = filterMockProducts({
+          category: selectedCategory,
+          search: searchQuery,
+          is_combo: showComboOnly,
+        });
+        setProducts(fallback.data);
+        setCategories(INITIAL_CATEGORIES);
       } finally {
         setLoading(false);
       }
@@ -77,15 +96,26 @@ export const CatalogPage: React.FC = () => {
   const handleCategorySelect = (catSlug: string) => {
     setSelectedCategory(catSlug);
     setShowWishlistOnly(false);
+    const isCombo = catSlug === 'student-combos' || catSlug === 'combos' || catSlug === 'combo';
+    setShowComboOnly(isCombo);
     setSearchParams((prev) => {
-      if (catSlug === 'all') prev.delete('category');
-      else prev.set('category', catSlug);
+      if (catSlug === 'all') {
+        prev.delete('category');
+        prev.delete('combo');
+      } else if (isCombo) {
+        prev.set('category', 'student-combos');
+        prev.set('combo', 'true');
+      } else {
+        prev.set('category', catSlug);
+        prev.delete('combo');
+      }
       return prev;
     });
   };
 
   const CATEGORY_CHIPS = [
     { slug: 'all', label: 'All Items' },
+    { slug: 'furniture', label: 'Furniture' },
     { slug: 'living-room', label: 'Living Room' },
     { slug: 'bedroom', label: 'Bedroom Sets' },
     { slug: 'appliances', label: 'Home Appliances' },
@@ -93,6 +123,20 @@ export const CatalogPage: React.FC = () => {
     { slug: 'dining', label: 'Dining Room' },
     { slug: 'student-combos', label: '1BHK Combos' },
   ];
+
+  const isChipActive = (chipSlug: string) => {
+    if (showWishlistOnly) return false;
+    if (chipSlug === 'all') return (selectedCategory === 'all' || !selectedCategory) && !showComboOnly;
+    if (chipSlug === selectedCategory) return true;
+    if (chipSlug === 'bedroom' && (selectedCategory === 'bed' || selectedCategory === 'bedroom')) return true;
+    if (chipSlug === 'living-room' && (selectedCategory === 'sofa' || selectedCategory === 'living-room')) return true;
+    if (chipSlug === 'appliances' && ['fridge', 'washing-machine', 'tv', 'appliances'].includes(selectedCategory)) return true;
+    if (chipSlug === 'study-wfh' && ['table', 'study-wfh', 'wfh'].includes(selectedCategory)) return true;
+    if (chipSlug === 'dining' && ['dining', 'dining-room'].includes(selectedCategory)) return true;
+    if (chipSlug === 'student-combos' && (showComboOnly || selectedCategory === 'student-combos' || selectedCategory === 'combos' || selectedCategory === 'combo')) return true;
+    if (chipSlug === 'furniture' && ['furniture', 'bed', 'sofa', 'table', 'dining'].includes(selectedCategory)) return true;
+    return false;
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-slate-950 text-slate-100 min-h-screen">
@@ -115,7 +159,7 @@ export const CatalogPage: React.FC = () => {
       {/* Category Chips Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-800/80">
         {CATEGORY_CHIPS.map((chip) => {
-          const isSelected = selectedCategory === chip.slug && !showWishlistOnly;
+          const isSelected = isChipActive(chip.slug);
           return (
             <button
               key={chip.slug}

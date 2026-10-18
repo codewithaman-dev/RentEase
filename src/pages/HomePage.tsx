@@ -22,7 +22,7 @@ import { ProductCard } from '../components/ProductCard';
 import { FAQAccordion } from '../components/FAQAccordion';
 import { RentVsBuyCalculator } from '../components/RentVsBuyCalculator';
 import { Product, Category } from '../types';
-import supabase from '../lib/supabase';
+import { apiFetch, INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_SERVICE_AREAS } from '../lib/api';
 
 export const HomePage: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -42,39 +42,33 @@ export const HomePage: React.FC = () => {
 
         try {
           const [prodRes, catRes, saRes] = await Promise.all([
-            fetch('/api/products?limit=10'),
-            fetch('/api/categories'),
-            fetch('/api/service-areas'),
+            apiFetch('/api/products?limit=10'),
+            apiFetch('/api/categories'),
+            apiFetch('/api/service-areas'),
           ]);
 
-          if (prodRes.ok) {
-            const prods = await prodRes.json();
-            prodsData = Array.isArray(prods) ? prods : (prods.data || []);
+          if (prodRes) {
+            prodsData = Array.isArray(prodRes) ? prodRes : (prodRes.data || []);
           }
-          if (catRes.ok) {
-            const cats = await catRes.json();
-            catsData = Array.isArray(cats) ? cats : (cats.data || []);
+          if (catRes) {
+            catsData = Array.isArray(catRes) ? catRes : (catRes.data || []);
           }
-          if (saRes.ok) {
-            const sa = await saRes.json();
-            saData = Array.isArray(sa) ? sa : (sa.data || []);
+          if (saRes) {
+            saData = Array.isArray(saRes) ? saRes : (saRes.data || []);
           }
-        } catch {}
+        } catch (err) {
+          console.warn('API fetch warning:', err);
+        }
 
-        // Direct Supabase Fallback for local VS Code `npm run dev`
+        // Guaranteed fallback to seed data on static hosts (like Netlify)
         if (prodsData.length === 0) {
-          const { data: dbProds } = await supabase.from('products_v2').select('*').limit(6);
-          if (dbProds && dbProds.length > 0) prodsData = dbProds;
+          prodsData = INITIAL_PRODUCTS.slice(0, 6);
         }
-
         if (catsData.length === 0) {
-          const { data: dbCats } = await supabase.from('categories_v2').select('*');
-          if (dbCats && dbCats.length > 0) catsData = dbCats;
+          catsData = INITIAL_CATEGORIES;
         }
-
         if (saData.length === 0) {
-          const { data: dbSA } = await supabase.from('service_areas').select('*');
-          if (dbSA && dbSA.length > 0) saData = dbSA;
+          saData = INITIAL_SERVICE_AREAS;
         }
 
         setFeaturedProducts(prodsData.slice(0, 6));
@@ -82,6 +76,9 @@ export const HomePage: React.FC = () => {
         setServiceAreas(saData);
       } catch (err) {
         console.error('Error fetching homepage data:', err);
+        setFeaturedProducts(INITIAL_PRODUCTS.slice(0, 6));
+        setCategories(INITIAL_CATEGORIES);
+        setServiceAreas(INITIAL_SERVICE_AREAS);
       } finally {
         setLoading(false);
       }
@@ -134,10 +131,13 @@ export const HomePage: React.FC = () => {
             >
               
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-                <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-400">
+                <Link
+                  to="/catalog"
+                  className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all cursor-pointer"
+                >
                   <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
                   <span>Zero Upfront Cash Outlay • Flexi Rentals from ₹449/mo</span>
-                </div>
+                </Link>
 
                 <RentVsBuyCalculator />
               </div>
@@ -190,26 +190,26 @@ export const HomePage: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md shrink-0"
+                  className="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md shrink-0 cursor-pointer"
                 >
                   Search
                 </button>
               </form>
 
-              {/* Trust Badges */}
+              {/* Trust Badges - All Clickable */}
               <div className="pt-6 grid grid-cols-3 gap-4 border-t border-slate-800/80 text-left">
-                <div>
-                  <div className="text-xl font-black text-white">48 Hours</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Free Delivery & Assembly</div>
-                </div>
-                <div>
-                  <div className="text-xl font-black text-emerald-400">100% Free</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Inter-Flats Moving Support</div>
-                </div>
-                <div>
-                  <div className="text-xl font-black text-teal-400">₹0 Fee</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Technician Repair SLA</div>
-                </div>
+                <Link to="/catalog" className="group cursor-pointer">
+                  <div className="text-xl font-black text-white group-hover:text-emerald-400 transition-colors">48 Hours</div>
+                  <div className="text-xs text-slate-400 mt-0.5 group-hover:text-slate-300">Free Delivery & Assembly &rarr;</div>
+                </Link>
+                <Link to="/rental-terms" className="group cursor-pointer">
+                  <div className="text-xl font-black text-emerald-400 group-hover:underline">100% Free</div>
+                  <div className="text-xs text-slate-400 mt-0.5 group-hover:text-slate-300">Inter-Flats Moving Support &rarr;</div>
+                </Link>
+                <Link to="/maintenance-sla" className="group cursor-pointer">
+                  <div className="text-xl font-black text-teal-400 group-hover:underline">₹0 Fee</div>
+                  <div className="text-xs text-slate-400 mt-0.5 group-hover:text-slate-300">Technician Repair SLA &rarr;</div>
+                </Link>
               </div>
 
             </motion.div>
@@ -229,29 +229,39 @@ export const HomePage: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
 
-                {/* Floating Highlight Pill */}
-                <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 p-3 rounded-2xl shadow-xl flex items-center gap-3">
-                  <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl">
+                {/* Floating Highlight Pill - Clickable */}
+                <Link
+                  to="/rental-terms"
+                  className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 hover:border-emerald-500/50 p-3 rounded-2xl shadow-xl flex items-center gap-3 group/pill transition-all cursor-pointer"
+                >
+                  <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl group-hover/pill:scale-110 transition-transform">
                     <RefreshCw className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white">Shifting Apartments?</div>
-                    <div className="text-[11px] text-emerald-400 font-medium">Free Relocation Service</div>
+                    <div className="text-xs font-bold text-white group-hover/pill:text-emerald-400 transition-colors">Shifting Apartments?</div>
+                    <div className="text-[11px] text-emerald-400 font-medium">Free Relocation Service &rarr;</div>
                   </div>
-                </div>
+                </Link>
 
-                <div className="absolute bottom-6 left-6 right-6 p-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-2xl">
+                {/* Floating Featured Combo Banner - Clickable */}
+                <Link
+                  to="/catalog?combo=true"
+                  className="absolute bottom-6 left-6 right-6 p-4 bg-slate-900/95 backdrop-blur-md border border-slate-800 hover:border-emerald-500/60 rounded-2xl group/combo transition-all cursor-pointer block"
+                >
                   <div className="flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Featured Indian Combo</span>
-                      <h4 className="font-bold text-white text-base">Full 1BHK Apartment Bundle</h4>
+                      <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" /> Featured Indian Combo
+                      </span>
+                      <h4 className="font-bold text-white text-base group-hover/combo:text-emerald-400 transition-colors">Full 1BHK Apartment Bundle</h4>
                       <p className="text-xs text-slate-400">Queen Bed + Sofa + Fridge + WFH Desk</p>
                     </div>
                     <div className="text-right">
                       <span className="text-lg font-black text-emerald-400">₹2,499<span className="text-xs text-slate-400 font-normal">/mo</span></span>
+                      <span className="block text-[10px] text-emerald-400 font-bold mt-0.5">Explore &rarr;</span>
                     </div>
                   </div>
-                </div>
+                </Link>
 
               </div>
             </motion.div>
@@ -312,42 +322,48 @@ export const HomePage: React.FC = () => {
                 title: '1. Browse & Select',
                 desc: 'Explore certified Grade A beds, sofas, refrigerators, and WFH setups.',
                 icon: Sofa,
+                link: '/catalog',
               },
               {
                 step: '02',
                 title: '2. Choose Tenure',
                 desc: 'Pick 3, 6, 9, or 12+ month plans. Longer tenure = cheaper monthly rent.',
                 icon: Clock,
+                link: '/catalog',
               },
               {
                 step: '03',
                 title: '3. 48h Delivery',
                 desc: 'Free doorstep delivery and expert assembly across Bangalore, Pune, Hyderabad.',
                 icon: Truck,
+                link: '/catalog',
               },
               {
                 step: '04',
                 title: '4. Relocate or Return',
                 desc: 'Free city relocation if you shift flats, or easy return with 48h deposit refund.',
                 icon: RefreshCw,
+                link: '/rental-terms',
               },
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
-                <motion.div
-                  key={idx}
-                  whileHover={{ y: -5 }}
-                  className="bg-slate-900 border border-slate-800 p-6 rounded-2xl relative space-y-3 shadow-lg"
-                >
-                  <span className="text-3xl font-black text-slate-800 absolute top-4 right-4">
-                    {item.step}
-                  </span>
-                  <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl w-fit">
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-bold text-white text-base">{item.title}</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
-                </motion.div>
+                <Link key={idx} to={item.link} className="block">
+                  <motion.div
+                    whileHover={{ y: -5 }}
+                    className="bg-slate-900 border border-slate-800 hover:border-emerald-500/50 p-6 rounded-2xl relative space-y-3 shadow-lg transition-colors h-full"
+                  >
+                    <span className="text-3xl font-black text-slate-800 absolute top-4 right-4">
+                      {item.step}
+                    </span>
+                    <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl w-fit">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-white text-base">{item.title}</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                    <span className="text-[11px] font-bold text-emerald-400 block pt-1">Learn more &rarr;</span>
+                  </motion.div>
+                </Link>
               );
             })}
           </div>
